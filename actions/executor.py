@@ -10,7 +10,7 @@ Fluxo de resolução de um comando:
 import subprocess
 from pathlib import Path
 
-from actions.commands import resolve_command
+from actions.commands import resolve_command, resolve_alias
 from actions.finder import find_executable, extract_app_name
 
 
@@ -32,12 +32,17 @@ def execute(text: str) -> str:
     if command is not None:
         return _dispatch(command)
 
-    # ── Etapa 2: busca dinâmica no computador ─────────────────────────────────
     app_name = extract_app_name(text)
 
     if not app_name:
         return "Entendi que é um comando, mas não consegui identificar o app."
 
+    # ── Etapa 2: resolve apelidos ("navegador" → "zen") ───────────────────────
+    real_name = resolve_alias(app_name)
+    if real_name:
+        app_name = real_name
+
+    # ── Etapa 3: busca dinâmica no computador ─────────────────────────────────
     print(f"  🔍 Procurando '{app_name}' no computador...")
 
     exe_path = find_executable(app_name)
