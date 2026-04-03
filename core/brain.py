@@ -13,7 +13,7 @@ Como funciona:
 
 import time
 import ollama
-from config.settings import OLLAMA_MODEL, SYSTEM_PROMPT, PERSONA_NAME
+from config.settings import OLLAMA_MODEL, SYSTEM_PROMPT, PERSONA_NAME, USE_BUILTIN_PERSONA
 
 # Quantas vezes tentar se o modelo ainda estiver carregando
 _MAX_RETRIES = 5
@@ -36,8 +36,13 @@ def generate_response(text: str, history: list[dict] | None = None) -> str:
     Returns:
         Resposta do modelo como string.
     """
-    # Monta a lista de mensagens: [system] + [histórico] + [mensagem atual]
-    messages: list[dict] = [{"role": "system", "content": SYSTEM_PROMPT}]
+    # Monta a lista de mensagens.
+    # Se o modelo 'ai:daughter' está ativo, a persona já está embutida
+    # via Modelfile — não precisa enviar o SYSTEM_PROMPT novamente.
+    # Para modelos base (ex: gemma3:4b), envia o system prompt normal.
+    messages: list[dict] = []
+    if not USE_BUILTIN_PERSONA:
+        messages.append({"role": "system", "content": SYSTEM_PROMPT})
 
     if history:
         messages.extend(history)
