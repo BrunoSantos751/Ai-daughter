@@ -14,6 +14,9 @@ from actions.commands import resolve_command, resolve_alias
 from actions.finder import find_executable, extract_app_name
 
 
+_last_phrase: str = ""
+
+
 def execute(text: str) -> str:
     """
     Ponto de entrada principal do executor.
@@ -43,17 +46,29 @@ def execute(text: str) -> str:
         app_name = real_name
 
     # ── Etapa 3: busca dinâmica no computador ─────────────────────────────────
-    print(f"  🔍 Procurando '{app_name}' no computador...")
+    global _last_phrase
+    import random
+    from config.settings import PERSONA_NAME
+    
+    phrases = [
+        f"[{PERSONA_NAME}] Um segundo, vou dar uma olhada e ver se acho o '{app_name}' perdido por aqui...",
+        f"[{PERSONA_NAME}] Deixa comigo. Procurando o '{app_name}'...",
+        f"[{PERSONA_NAME}] Espera aí, deixa eu ver se encontro esse '{app_name}' nas suas coisas...",
+        f"[{PERSONA_NAME}] Procurando '{app_name}'... espero que você tenha mesmo instalado.",
+        f"[{PERSONA_NAME}] Me dá um instante. Caçando o '{app_name}' nos confins do sistema..."
+    ]
+    
+    available_phrases = [p for p in phrases if p != _last_phrase]
+    chosen = random.choice(available_phrases) if available_phrases else random.choice(phrases)
+    _last_phrase = chosen
+    print(f"{chosen}")
 
     exe_path = find_executable(app_name)
 
     if exe_path:
         return _launch(exe_path, label=app_name.title())
     else:
-        return (
-            f"Procurei por '{app_name}' mas não encontrei nada. "
-            f"Verifique se está instalado ou adicione em config/settings.py → APP_PATHS."
-        )
+        return f"Erro: O aplicativo '{app_name}' não foi encontrado no sistema do usuário."
 
 
 # ─── Dispatcher e handlers ────────────────────────────────────────────────────
@@ -88,8 +103,8 @@ def _launch(path: str, label: str) -> str:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            return f"Abrindo {label}..."
+            return f"Sucesso: Abrindo {label}..."
         except Exception as e:
-            return f"Não consegui abrir {label}. Erro: {e}"
+            return f"Erro: Não consegui abrir {label}. Causa do erro: {e}"
     else:
-        return f"Executável não encontrado em: {path}"
+        return f"Erro: Executável de {label} não foi encontrado em: {path}"

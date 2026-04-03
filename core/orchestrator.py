@@ -71,12 +71,29 @@ class Orchestrator:
         intent = detect_intent(text)
 
         if intent == "command":
-            # Executa o comando e retorna o resultado diretamente
+            # Executa o comando e obtém o resultado do sistema
             result = execute(text)
-            # Registra na memória como contexto (sem chamar a IA)
+            
+            # Registra o comando do usuário na memória
             self.memory.add_user(text)
-            self.memory.add_assistant(result)
-            return f"[Sistema] {result}"
+            
+            # Pega o histórico atual e remove o último item (que é a mensagem atual)
+            # para substituí-la por uma versão com o feedback do sistema embutido.
+            temp_history = self.memory.get_history()[:-1]
+            
+            # Cria um prompt enriquecido para a IA gerar a resposta
+            prompt = (
+                f"{text}\n\n"
+                f"[Aviso de Sistema: O comando foi executado. Resultado obtido: '{result}'. "
+                f"Se o resultado for um sucesso, confirme a ação usando sua persona. "
+                f"Se o resultado for um erro (ex: não encontrado), informe o usuário claramente e de forma natural sobre a falha usando sua persona.]"
+            )
+            
+            # Passa para a IA com o histórico de contexto
+            response = generate_response(prompt, history=temp_history)
+            self.memory.add_assistant(response)
+            
+            return f"[{PERSONA_NAME}] {response}"
 
         else:
             # Chat: passa para a IA com o histórico de contexto
