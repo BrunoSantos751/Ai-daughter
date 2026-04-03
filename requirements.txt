@@ -3,10 +3,10 @@ ollama>=0.4.0           # Cliente oficial do Ollama (LLM local, gratuito)
 python-dotenv>=1.0.0    # Carrega variáveis do .env automaticamente
 
 # ─── Fase 2: Voz (instale quando chegar a hora) ───────────────────────────────
-# openai-whisper          # STT local via Whisper
-# elevenlabs              # TTS com ElevenLabs API
-# sounddevice             # Captura de microfone
-# scipy                   # Processamento de áudio
+faster-whisper          # STT local via modelo Small rápido
+elevenlabs              # TTS com ElevenLabs API
+sounddevice             # Captura de microfone
+scipy                   # Processamento de áudio
 
 # ─── Fase 3: Controle do computador ──────────────────────────────────────────
 # pyautogui               # Controle de mouse e teclado

@@ -84,6 +84,8 @@ def extract_app_name(text: str) -> str | None:
         Nome extraído do app ou None se não conseguir extrair.
     """
     text_clean = text.lower().strip()
+    if text_clean.endswith("."):
+        text_clean = text_clean[:-1].strip()
 
     # Palavras de comando para remover do início (do maior para o menor)
     command_prefixes = [

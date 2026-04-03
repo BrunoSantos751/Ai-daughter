@@ -7,15 +7,18 @@ Loop principal do terminal: lê entrada do usuário, processa, exibe resposta.
 import sys
 from core.orchestrator import Orchestrator
 from config.settings import PERSONA_NAME
+from voice.stt import load_model   
 
+load_model()
 
 # ─── Banner de boas-vindas ────────────────────────────────────────────────────
 BANNER = f"""
 ╔══════════════════════════════════════════╗
 ║          {PERSONA_NAME} — Assistente Virtual          ║
 ║                                          ║
-║  Digite sua mensagem ou um comando.      ║
+║  Digite sua mensagem corporativa.        ║
 ║  Ex: "abre o chrome"  |  "oi, tudo bem" ║
+║  Para falar: digite "/voz"              ║
 ║  Para sair: Ctrl+C ou "sair"             ║
 ╚══════════════════════════════════════════╝
 """
@@ -50,6 +53,30 @@ def main() -> None:
             if user_input.lower() in ("sair", "exit", "quit", "tchau"):
                 print(f"[{PERSONA_NAME}] Até mais. Qualquer coisa, me chama.")
                 sys.exit(0)
+
+            # Invocação do módulo de voz
+            if user_input.lower() == "/voz":
+                from voice.stt import record_until_enter, transcribe
+                audio_path = record_until_enter()
+                if not audio_path:
+                    continue
+                
+                sys.stdout.write("⏳  [Voz] Transcrevendo áudio...\r")
+                sys.stdout.flush()
+                
+                transcribed_text = transcribe(audio_path)
+                
+                # Limpa a linha de transcrição
+                sys.stdout.write(" " * 50 + "\r")
+                sys.stdout.flush()
+                
+                if not transcribed_text:
+                    print("⚠️  [Voz] Não consegui entender o áudio.")
+                    continue
+                
+                print(f"Você (Voz) › {transcribed_text}")
+                user_input = transcribed_text
+                # Agora o fluxo segue normalmente como se tivesse sido digitado
 
             # Ignora entradas vazias
             if not user_input:
