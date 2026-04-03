@@ -6,6 +6,7 @@ enquanto o programa estiver rodando (memória em RAM, não persistente).
 """
 
 from dataclasses import dataclass, field
+from config.settings import MAX_TURNS as _DEFAULT_MAX_TURNS
 
 
 @dataclass
@@ -17,7 +18,7 @@ class ConversationMemory:
         max_turns: Máximo de pares (usuário + assistente) mantidos.
                    Evita enviar contexto gigante para a API.
     """
-    max_turns: int = 10
+    max_turns: int = _DEFAULT_MAX_TURNS
     _history: list[dict] = field(default_factory=list)
 
     def add_user(self, text: str) -> None:

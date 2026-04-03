@@ -25,6 +25,12 @@ load_dotenv()
 OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "ai:daughter")
 
+# ─── Memória de conversa ──────────────────────────────────────────────────────
+# Quantos pares (usuário + assistente) são mantidos no histórico enviado ao
+# modelo. Valores menores = contexto menor = 1º token mais rápido.
+# Ajuste via MAX_TURNS no .env (padrão: 5).
+MAX_TURNS: int = int(os.getenv("MAX_TURNS", "5"))
+
 # ─── Persona ──────────────────────────────────────────────────────────────────
 PERSONA_NAME: str = "Saphira"
 

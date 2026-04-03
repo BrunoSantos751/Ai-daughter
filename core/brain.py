@@ -9,9 +9,12 @@ Como funciona:
   - Usamos a biblioteca `ollama` que abstrai essa comunicação
   - Zero custo, zero internet, tudo roda na sua máquina
   - Retry automático quando o modelo ainda está carregando
+  - Spinner animado no terminal enquanto aguarda a resposta
 """
 
+import sys
 import time
+import threading
 import ollama
 from config.settings import OLLAMA_MODEL, SYSTEM_PROMPT, PERSONA_NAME, USE_BUILTIN_PERSONA
 
@@ -19,7 +22,78 @@ from config.settings import OLLAMA_MODEL, SYSTEM_PROMPT, PERSONA_NAME, USE_BUILT
 _MAX_RETRIES = 5
 # Segundos entre cada tentativa
 _RETRY_DELAY = 3.0
+# Frames do spinner Braille
+_SPIN_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
+
+# ─── Spinner ──────────────────────────────────────────────────────────────────
+
+def _chat_with_spinner(messages: list[dict]) -> str:
+    """
+    Chama ollama.chat() de forma bloqueante em uma thread separada
+    enquanto exibe um spinner animado no terminal principal.
+
+    O spinner desaparece automaticamente quando a resposta chega,
+    sem deixar artefatos visuais na tela.
+
+    Args:
+        messages: Lista de mensagens no formato Ollama.
+
+    Returns:
+        Conteúdo da resposta como string.
+
+    Raises:
+        Propaga qualquer exceção lançada pelo Ollama (ResponseError, etc.)
+    """
+    stop_event = threading.Event()
+    result: dict = {}
+    error_box: list = []
+
+    def _worker() -> None:
+        try:
+            resp = ollama.chat(
+                model=OLLAMA_MODEL,
+                messages=messages,
+                options={
+                    "temperature": 0.8,  # Criatividade para a persona
+                    "num_predict": 300,  # Equivalente a max_tokens
+                },
+            )
+            result["content"] = resp["message"]["content"].strip()
+        except Exception as exc:
+            error_box.append(exc)
+        finally:
+            stop_event.set()
+
+    worker_thread = threading.Thread(target=_worker, daemon=True)
+    worker_thread.start()
+
+    # Anima o spinner enquanto aguarda a thread terminar
+    frame_idx = 0
+    while not stop_event.is_set():
+        frame = _SPIN_FRAMES[frame_idx % len(_SPIN_FRAMES)]
+        sys.stdout.write(f"\r  {frame} {PERSONA_NAME} está pensando...")
+        sys.stdout.flush()
+        frame_idx += 1
+        time.sleep(0.08)
+
+    # Limpa a linha do spinner antes de imprimir a resposta
+    sys.stdout.write("\r" + " " * 45 + "\r")
+    sys.stdout.flush()
+
+    worker_thread.join()
+
+    # Re-propaga erros do Ollama para o retry handler em generate_response()
+    if error_box:
+        raise error_box[0]
+
+    if "content" not in result:
+        raise RuntimeError("Worker thread não retornou resultado.")
+
+    return result["content"]
+
+
+# ─── Interface pública ────────────────────────────────────────────────────────
 
 def generate_response(text: str, history: list[dict] | None = None) -> str:
     """
@@ -51,15 +125,7 @@ def generate_response(text: str, history: list[dict] | None = None) -> str:
 
     for attempt in range(1, _MAX_RETRIES + 1):
         try:
-            response = ollama.chat(
-                model=OLLAMA_MODEL,
-                messages=messages,
-                options={
-                    "temperature": 0.8,  # Criatividade para a persona
-                    "num_predict": 300,  # Equivalente a max_tokens
-                },
-            )
-            return response["message"]["content"].strip()
+            return _chat_with_spinner(messages)
 
         except ollama.ResponseError as e:
             error_msg = str(e).lower()
