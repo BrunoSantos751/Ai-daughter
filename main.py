@@ -9,9 +9,8 @@ from core.orchestrator import Orchestrator
 from config.settings import PERSONA_NAME
 from voice.stt import load_model   
 
-load_model()
-
-# ─── Banner de boas-vindas ────────────────────────────────────────────────────
+# Inicializa o modelo apenas se estiver rodando como script principal, ou removemos daqui e deixamos lazy load.
+# O ideal é deixar o lazy-load em get_voice_input ou chamar dentro do __main__.
 BANNER = f"""
 ╔══════════════════════════════════════════╗
 ║          {PERSONA_NAME} — Assistente Virtual          ║
@@ -56,19 +55,9 @@ def main() -> None:
 
             # Invocação do módulo de voz
             if user_input.lower() == "/voz":
-                from voice.stt import record_until_enter, transcribe
-                audio_path = record_until_enter()
-                if not audio_path:
-                    continue
+                from voice.stt import get_voice_input
                 
-                sys.stdout.write("⏳  [Voz] Transcrevendo áudio...\r")
-                sys.stdout.flush()
-                
-                transcribed_text = transcribe(audio_path)
-                
-                # Limpa a linha de transcrição
-                sys.stdout.write(" " * 50 + "\r")
-                sys.stdout.flush()
+                transcribed_text = get_voice_input()
                 
                 if not transcribed_text:
                     print("⚠️  [Voz] Não consegui entender o áudio.")
