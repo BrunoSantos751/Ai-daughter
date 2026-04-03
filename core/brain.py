@@ -17,6 +17,7 @@ import time
 import threading
 import ollama
 from config.settings import OLLAMA_MODEL, SYSTEM_PROMPT, PERSONA_NAME, USE_BUILTIN_PERSONA
+from config.responses import get_response
 
 # Quantas vezes tentar se o modelo ainda estiver carregando
 _MAX_RETRIES = 5
@@ -72,7 +73,8 @@ def _chat_with_spinner(messages: list[dict]) -> str:
     frame_idx = 0
     while not stop_event.is_set():
         frame = _SPIN_FRAMES[frame_idx % len(_SPIN_FRAMES)]
-        sys.stdout.write(f"\r  {frame} {PERSONA_NAME} está pensando...")
+        msg = get_response("system.thinking", frame=frame)
+        sys.stdout.write(f"\r{msg}")
         sys.stdout.flush()
         frame_idx += 1
         time.sleep(0.08)
@@ -133,32 +135,21 @@ def generate_response(text: str, history: list[dict] | None = None) -> str:
             # Modelo ainda carregando — aguarda e tenta de novo
             if "loading" in error_msg or "status code: 500" in error_msg:
                 if attempt < _MAX_RETRIES:
-                    print(
-                        f"  ⏳ Modelo carregando... aguardando "
-                        f"({attempt}/{_MAX_RETRIES})"
-                    )
+                    msg = get_response("system.model_loading", attempt=attempt, max_retries=_MAX_RETRIES)
+                    print(f"  ⏳ {msg}")
                     time.sleep(_RETRY_DELAY)
                     continue
                 else:
-                    return (
-                        "O modelo demorou demais para carregar. "
-                        "Tente novamente em alguns segundos."
-                    )
+                    return get_response("errors.model_loading_timeout")
 
             # Modelo não encontrado — instrui o usuário a baixar
             if "not found" in error_msg or "pull" in error_msg:
-                return (
-                    f"Modelo '{OLLAMA_MODEL}' não encontrado. "
-                    f"Rode: ollama pull {OLLAMA_MODEL}"
-                )
+                return get_response("errors.model_not_found", model=OLLAMA_MODEL)
 
-            return f"Erro do Ollama: {e}"
+            return get_response("errors.ollama_error", error=e)
 
         except Exception:
             # Ollama provavelmente não está rodando
-            return (
-                "Não consegui conectar ao Ollama. "
-                "Verifique se ele está rodando: ollama serve"
-            )
+            return get_response("errors.ollama_connection_failed")
 
-    return "Não foi possível obter resposta após várias tentativas."
+    return get_response("errors.max_retries_exceeded")

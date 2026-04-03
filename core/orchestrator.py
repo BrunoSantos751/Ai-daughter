@@ -9,6 +9,7 @@ from core.brain import generate_response
 from core.memory import ConversationMemory
 from actions.executor import execute
 from config.settings import COMMAND_KEYWORDS, PERSONA_NAME
+from config.responses import get_response
 
 
 def detect_intent(text: str) -> str:
@@ -65,7 +66,7 @@ class Orchestrator:
         # Comandos especiais da sessão
         if text.lower() in ("limpar", "clear", "esquece tudo"):
             self.memory.clear()
-            return f"[{PERSONA_NAME}] Memória apagada. Recomeçando do zero."
+            return get_response("system.memory_cleared")
 
         # ── Detecção de intenção ──────────────────────────────────────────────
         intent = detect_intent(text)
@@ -82,12 +83,7 @@ class Orchestrator:
             temp_history = self.memory.get_history()[:-1]
             
             # Cria um prompt enriquecido para a IA gerar a resposta
-            prompt = (
-                f"{text}\n\n"
-                f"[Aviso de Sistema: O comando foi executado. Resultado obtido: '{result}'. "
-                f"Se o resultado for um sucesso, confirme a ação usando sua persona. "
-                f"Se o resultado for um erro (ex: não encontrado), informe o usuário claramente e de forma natural sobre a falha usando sua persona.]"
-            )
+            prompt = get_response("system.command_executed_prompt", text=text, result=result)
             
             # Passa para a IA com o histórico de contexto
             response = generate_response(prompt, history=temp_history)

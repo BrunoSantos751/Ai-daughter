@@ -12,6 +12,7 @@ from pathlib import Path
 
 from actions.commands import resolve_command, resolve_alias
 from actions.finder import find_executable, extract_app_name
+from config.responses import get_response
 
 
 _last_phrase: str = ""
@@ -38,7 +39,7 @@ def execute(text: str) -> str:
     app_name = extract_app_name(text)
 
     if not app_name:
-        return "Entendi que é um comando, mas não consegui identificar o app."
+        return get_response("errors.unidentified_app")
 
     # ── Etapa 2: resolve apelidos ("navegador" → "zen") ───────────────────────
     real_name = resolve_alias(app_name)
@@ -48,15 +49,8 @@ def execute(text: str) -> str:
     # ── Etapa 3: busca dinâmica no computador ─────────────────────────────────
     global _last_phrase
     import random
-    from config.settings import PERSONA_NAME
     
-    phrases = [
-        f"[{PERSONA_NAME}] Um segundo, vou dar uma olhada e ver se acho o '{app_name}' perdido por aqui...",
-        f"[{PERSONA_NAME}] Deixa comigo. Procurando o '{app_name}'...",
-        f"[{PERSONA_NAME}] Espera aí, deixa eu ver se encontro esse '{app_name}' nas suas coisas...",
-        f"[{PERSONA_NAME}] Procurando '{app_name}'... espero que você tenha mesmo instalado.",
-        f"[{PERSONA_NAME}] Me dá um instante. Caçando o '{app_name}' nos confins do sistema..."
-    ]
+    phrases = get_response("searching", app_name=app_name)
     
     available_phrases = [p for p in phrases if p != _last_phrase]
     chosen = random.choice(available_phrases) if available_phrases else random.choice(phrases)
@@ -68,7 +62,7 @@ def execute(text: str) -> str:
     if exe_path:
         return _launch(exe_path, label=app_name.title())
     else:
-        return f"Erro: O aplicativo '{app_name}' não foi encontrado no sistema do usuário."
+        return get_response("errors.app_not_found", app_name=app_name)
 
 
 # ─── Dispatcher e handlers ────────────────────────────────────────────────────
@@ -81,7 +75,7 @@ def _dispatch(command: dict) -> str:
     handler = handlers.get(command["type"])
     if handler:
         return handler(command)
-    return f"Tipo de comando '{command['type']}' ainda não implementado."
+    return get_response("errors.command_not_implemented", command_type=command["type"])
 
 
 def _launch(path: str, label: str) -> str:
@@ -103,8 +97,8 @@ def _launch(path: str, label: str) -> str:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            return f"Sucesso: Abrindo {label}..."
+            return get_response("success.opening_app", label=label)
         except Exception as e:
-            return f"Erro: Não consegui abrir {label}. Causa do erro: {e}"
+            return get_response("errors.failed_to_open", label=label, error=e)
     else:
-        return f"Erro: Executável de {label} não foi encontrado em: {path}"
+        return get_response("errors.executable_not_found", label=label, path=path)

@@ -1,0 +1,30 @@
+{
+  "system": {
+    "memory_cleared": "[{persona_name}] Memória apagada. Recomeçando do zero.",
+    "thinking": "  {frame} {persona_name} está pensando...",
+    "model_loading": "Modelo carregando... aguardando ({attempt}/{max_retries})",
+    "command_executed_prompt": "{text}\n\n[Aviso de Sistema: O comando foi executado. Resultado obtido: '{result}'. Se o resultado for um sucesso, confirme a ação usando sua persona. Se o resultado for um erro (ex: não encontrado), informe o usuário claramente e de forma natural sobre a falha usando sua persona.]"
+  },
+  "errors": {
+    "model_loading_timeout": "O modelo demorou demais para carregar. Tente novamente em alguns segundos.",
+    "model_not_found": "Modelo '{model}' não encontrado. Rode: ollama pull {model}",
+    "ollama_error": "Erro do Ollama: {error}",
+    "ollama_connection_failed": "Não consegui conectar ao Ollama. Verifique se ele está rodando: ollama serve",
+    "max_retries_exceeded": "Não foi possível obter resposta após várias tentativas.",
+    "unidentified_app": "Entendi que é um comando, mas não consegui identificar o app.",
+    "app_not_found": "Erro: O aplicativo '{app_name}' não foi encontrado no sistema do usuário.",
+    "command_not_implemented": "Tipo de comando '{command_type}' ainda não implementado.",
+    "failed_to_open": "Erro: Não consegui abrir {label}. Causa do erro: {error}",
+    "executable_not_found": "Erro: Executável de {label} não foi encontrado em: {path}"
+  },
+  "success": {
+    "opening_app": "Sucesso: Abrindo {label}..."
+  },
+  "searching": [
+    "[{persona_name}] Um segundo, vou dar uma olhada e ver se acho o '{app_name}' perdido por aqui...",
+    "[{persona_name}] Deixa comigo. Procurando o '{app_name}'...",
+    "[{persona_name}] Espera aí, deixa eu ver se encontro esse '{app_name}' nas suas coisas...",
+    "[{persona_name}] Procurando '{app_name}'... espero que você tenha mesmo instalado.",
+    "[{persona_name}] Me dá um instante. Caçando o '{app_name}' nos confins do sistema..."
+  ]
+}
