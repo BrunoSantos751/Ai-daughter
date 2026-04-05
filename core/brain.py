@@ -29,7 +29,7 @@ _SPIN_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "
 
 # ─── Spinner ──────────────────────────────────────────────────────────────────
 
-def _chat_with_spinner(messages: list[dict]) -> str:
+def _chat_with_spinner(messages: list[dict], keep_alive: str | None = None) -> str:
     """
     Chama ollama.chat() de forma bloqueante em uma thread separada
     enquanto exibe um spinner animado no terminal principal.
@@ -52,14 +52,18 @@ def _chat_with_spinner(messages: list[dict]) -> str:
 
     def _worker() -> None:
         try:
-            resp = ollama.chat(
-                model=OLLAMA_MODEL,
-                messages=messages,
-                options={
+            kwargs = {
+                "model": OLLAMA_MODEL,
+                "messages": messages,
+                "options": {
                     "temperature": 0.8,  # Criatividade para a persona
                     "num_predict": 300,  # Equivalente a max_tokens
                 },
-            )
+            }
+            if keep_alive is not None:
+                kwargs["keep_alive"] = keep_alive
+                
+            resp = ollama.chat(**kwargs)
             result["content"] = resp["message"]["content"].strip()
         except Exception as exc:
             error_box.append(exc)
@@ -97,7 +101,7 @@ def _chat_with_spinner(messages: list[dict]) -> str:
 
 # ─── Interface pública ────────────────────────────────────────────────────────
 
-def generate_response(text: str, history: list[dict] | None = None) -> str:
+def generate_response(text: str, history: list[dict] | None = None, keep_alive: str = "5m") -> str:
     """
     Envia o texto do usuário para o modelo local via Ollama
     e retorna a resposta da Aiko.
@@ -127,7 +131,7 @@ def generate_response(text: str, history: list[dict] | None = None) -> str:
 
     for attempt in range(1, _MAX_RETRIES + 1):
         try:
-            return _chat_with_spinner(messages)
+            return _chat_with_spinner(messages, keep_alive=keep_alive)
 
         except ollama.ResponseError as e:
             error_msg = str(e).lower()

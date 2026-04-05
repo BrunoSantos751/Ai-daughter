@@ -8,7 +8,7 @@ Recebe texto, decide o que fazer e coordena os módulos corretos.
 from core.brain import generate_response
 from core.memory import ConversationMemory
 from actions.executor import execute
-from config.settings import COMMAND_KEYWORDS, PERSONA_NAME
+from config.settings import COMMAND_KEYWORDS, VISION_KEYWORDS, PERSONA_NAME
 from config.responses import get_response
 
 
@@ -26,6 +26,10 @@ def detect_intent(text: str) -> str:
         "command" se parecer um comando, "chat" caso contrário.
     """
     text_lower = text.lower().strip()
+
+    for keyword in VISION_KEYWORDS:
+        if text_lower.startswith(keyword) or f" {keyword} " in text_lower:
+            return "vision"
 
     for keyword in COMMAND_KEYWORDS:
         if text_lower.startswith(keyword) or f" {keyword} " in text_lower:
@@ -71,7 +75,28 @@ class Orchestrator:
         # ── Detecção de intenção ──────────────────────────────────────────────
         intent = detect_intent(text)
 
-        if intent == "command":
+        if intent == "vision":
+            from actions.vision import analyze_screen_with_moondream
+            
+            # Feedback temporário no terminal
+            print(get_response("system.taking_screenshot"))
+            
+            # Análise da tela pelo moondream
+            analysis_result = analyze_screen_with_moondream(text)
+            
+            # Contexto (usuário)
+            self.memory.add_user(text)
+            temp_history = self.memory.get_history()[:-1]
+            
+            # Prompt enriquecido para a Saphira
+            prompt = get_response("system.vision_prompt", text=text, analysis=analysis_result)
+            
+            response = generate_response(prompt, history=temp_history)
+            self.memory.add_assistant(response)
+            
+            return f"[{PERSONA_NAME}] {response}"
+
+        elif intent == "command":
             # Executa o comando e obtém o resultado do sistema
             result = execute(text)
             

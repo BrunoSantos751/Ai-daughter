@@ -3,11 +3,14 @@
     "memory_cleared": "[{persona_name}] Memória apagada. Recomeçando do zero.",
     "thinking": "  {frame} {persona_name} está pensando...",
     "model_loading": "Modelo carregando... aguardando ({attempt}/{max_retries})",
-    "command_executed_prompt": "{text}\n\n[Aviso de Sistema: O comando foi executado. Resultado obtido: '{result}'. Se o resultado for um sucesso, confirme a ação usando sua persona. Se o resultado for um erro (ex: não encontrado), informe o usuário claramente e de forma natural sobre a falha usando sua persona.]"
+    "command_executed_prompt": "{text}\n\n[Aviso de Sistema: O comando foi executado. Resultado obtido: '{result}'. Se o resultado for um sucesso, confirme a ação usando sua persona. Se o resultado for um erro (ex: não encontrado), informe o usuário claramente e de forma natural sobre a falha usando sua persona.]",
+    "taking_screenshot": "[{persona_name}] Deixa eu dar uma olhada na sua tela, um segundo...",
+    "vision_prompt": "{text}\n\n[Aviso de Sistema: O usuário pediu para você observar a tela dele. Abaixo está a descrição crua da imagem da tela gerada por outro modelo (Moondream). Responda ao pedido do usuário acima se baseando nesta descrição, agindo naturalmente como a sua persona: {analysis}]"
   },
   "errors": {
     "model_loading_timeout": "O modelo demorou demais para carregar. Tente novamente em alguns segundos.",
     "model_not_found": "Modelo '{model}' não encontrado. Rode: ollama pull {model}",
+    "moondream_failed": "Não consegui usar meus olhos virtuais (erro no Moondream). Verifique se o modelo está baixado ou rodando. Erro: {error}",
     "ollama_error": "Erro do Ollama: {error}",
     "ollama_connection_failed": "Não consegui conectar ao Ollama. Verifique se ele está rodando: ollama serve",
     "max_retries_exceeded": "Não foi possível obter resposta após várias tentativas.",

@@ -14,8 +14,6 @@ from config.settings import WHISPER_MODEL
 # Para evitar problemas de libs conflitantes em alguns ambientes
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
-from RealtimeSTT import AudioToTextRecorder
-
 _recorder = None
 _stt_context = ""
 
@@ -35,6 +33,9 @@ def load_model():
     if _recorder is None:
         print(f"⏳  [Voz] Inicializando RealtimeSTT (modelo: '{WHISPER_MODEL}')...")
         _load_context()
+        
+        # Fazemos o import aqui dentro para não travar a inicialização do programa inteiro
+        from RealtimeSTT import AudioToTextRecorder
         
         # Callback para ir printando o que for falado em tempo real
         def _process_text_realtime(text):

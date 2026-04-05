@@ -9,3 +9,4 @@ elevenlabs              # TTS com ElevenLabs API
 # ─── Fase 3: Controle do computador ──────────────────────────────────────────
 # pyautogui               # Controle de mouse e teclado
 # keyboard                # Atalhos globais de teclado
+Pillow                  # Para tirar screenshots e passar para o moondream

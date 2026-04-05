@@ -7,10 +7,8 @@ Loop principal do terminal: lê entrada do usuário, processa, exibe resposta.
 import sys
 from core.orchestrator import Orchestrator
 from config.settings import PERSONA_NAME
-from voice.stt import load_model   
 
-# Inicializa o modelo apenas se estiver rodando como script principal, ou removemos daqui e deixamos lazy load.
-# O ideal é deixar o lazy-load em get_voice_input ou chamar dentro do __main__.
+# Inicializa o modelo dinamicamente dentro dos modulos que precisam
 BANNER = f"""
 ╔══════════════════════════════════════════╗
 ║          {PERSONA_NAME} — Assistente Virtual          ║

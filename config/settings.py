@@ -24,6 +24,7 @@ load_dotenv()
 #   Defina OLLAMA_MODEL=gemma3:4b no .env para usar sem o Modelfile.
 OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "ai:daughter")
+OLLAMA_VISION_MODEL: str = os.getenv("OLLAMA_VISION_MODEL", "moondream")
 
 # ─── Voz (Whisper STT) ────────────────────────────────────────────────────────
 WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "small")
@@ -70,6 +71,11 @@ COMMAND_KEYWORDS: list[str] = [
     "executar", "execute", "roda",
     "iniciar", "inicia",
     "ligar", "liga",
+]
+
+# Palavras-chave que disparam a deteção de visão
+VISION_KEYWORDS: list[str] = [
+    "veja", "olha", "olhar", "olhe", "minha tela", "na tela"
 ]
 
 # ─── Caminhos de aplicativos ──────────────────────────────────────────────────
