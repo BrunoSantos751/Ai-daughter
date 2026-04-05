@@ -10,6 +10,8 @@ from core.memory import ConversationMemory
 from actions.executor import execute
 from config.settings import COMMAND_KEYWORDS, VISION_KEYWORDS, PERSONA_NAME
 from config.responses import get_response
+from voice.tts import speak
+
 
 
 def detect_intent(text: str) -> str:
@@ -93,6 +95,7 @@ class Orchestrator:
             
             response = generate_response(prompt, history=temp_history)
             self.memory.add_assistant(response)
+            speak(response)
             
             return f"[{PERSONA_NAME}] {response}"
 
@@ -110,9 +113,9 @@ class Orchestrator:
             # Cria um prompt enriquecido para a IA gerar a resposta
             prompt = get_response("system.command_executed_prompt", text=text, result=result)
             
-            # Passa para a IA com o histórico de contexto
             response = generate_response(prompt, history=temp_history)
             self.memory.add_assistant(response)
+            speak(response)
             
             return f"[{PERSONA_NAME}] {response}"
 
@@ -121,4 +124,5 @@ class Orchestrator:
             self.memory.add_user(text)
             response = generate_response(text, history=self.memory.get_history()[:-1])
             self.memory.add_assistant(response)
+            speak(response)
             return f"[{PERSONA_NAME}] {response}"

@@ -3,8 +3,10 @@ ollama>=0.4.0           # Cliente oficial do Ollama (LLM local, gratuito)
 python-dotenv>=1.0.0    # Carrega variáveis do .env automaticamente
 
 # ─── Fase 2: Voz (instale quando chegar a hora) ───────────────────────────────
+audioop-lts             # Fix para erro do pydub (audioop missing) no Python 3.13
 RealtimeSTT             # STT com detecção de voz em tempo real
-elevenlabs              # TTS com ElevenLabs API
+RealtimeTTS             # Biblioteca principal para TTS em tempo real
+azure-cognitiveservices-speech  # Necessário para o AzureEngine
 
 # ─── Fase 3: Controle do computador ──────────────────────────────────────────
 # pyautogui               # Controle de mouse e teclado

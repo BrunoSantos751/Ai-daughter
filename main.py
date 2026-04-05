@@ -7,6 +7,7 @@ Loop principal do terminal: lê entrada do usuário, processa, exibe resposta.
 import sys
 from core.orchestrator import Orchestrator
 from config.settings import PERSONA_NAME
+from voice.tts import init_tts, stop_tts
 
 # Inicializa o modelo dinamicamente dentro dos modulos que precisam
 BANNER = f"""
@@ -25,8 +26,10 @@ def main() -> None:
     """Loop principal de interação via terminal."""
 
     print(BANNER)
+    init_tts()
 
     # Verifica se o Ollama está acessível
+
     from config.settings import OLLAMA_BASE_URL, OLLAMA_MODEL
     try:
         import urllib.request
@@ -49,6 +52,7 @@ def main() -> None:
             # Comando de saída
             if user_input.lower() in ("sair", "exit", "quit", "tchau"):
                 print(f"[{PERSONA_NAME}] Até mais. Qualquer coisa, me chama.")
+                stop_tts()
                 sys.exit(0)
 
             # Invocação do módulo de voz
@@ -77,6 +81,7 @@ def main() -> None:
         except KeyboardInterrupt:
             # Ctrl+C sai com elegância
             print(f"\n[{PERSONA_NAME}] Ok, indo embora. Tchau.")
+            stop_tts()
             sys.exit(0)
 
         except EOFError:

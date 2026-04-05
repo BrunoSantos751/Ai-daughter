@@ -26,9 +26,15 @@ OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "ai:daughter")
 OLLAMA_VISION_MODEL: str = os.getenv("OLLAMA_VISION_MODEL", "moondream")
 
-# ─── Voz (Whisper STT) ────────────────────────────────────────────────────────
+# ─── Voz (STT e TTS) ──────────────────────────────────────────────────────────
 WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "small")
 STT_RATE: int = int(os.getenv("STT_RATE", "16000"))  # Sample rate padrão p/ Whisper
+
+# TTS (Sintetizador de voz via Azure e RealtimeTTS)
+TTS_ENABLED: bool = os.getenv("TTS_ENABLED", "False").lower() in ("true", "1", "yes")
+AZURE_SPEECH_KEY: str | None = os.getenv("AZURE_SPEECH_KEY")
+AZURE_SPEECH_REGION: str | None = os.getenv("AZURE_SPEECH_REGION")
+AZURE_SPEECH_VOICE: str = os.getenv("AZURE_SPEECH_VOICE", "pt-BR-ThalitaNeural")
 
 # ─── Memória de conversa ──────────────────────────────────────────────────────
 # Quantos pares (usuário + assistente) são mantidos no histórico enviado ao
