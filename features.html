@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saphira — Funcionalidades</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(180deg, #0d0d1a 0%, #0a0a0f 100%);
+            border-bottom: 1px solid #1a1a2e;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            color: #6c63ff;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #888;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section { padding: 60px 0; }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #1a1a2e;
+            color: #fff;
+        }
+
+        /* Feature cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #111118;
+            border: 1px solid #1e1e30;
+            border-radius: 12px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: #6c63ff;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        /* Commands table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #1a1a2e;
+        }
+
+        th {
+            color: #888;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td:first-child {
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #6c63ff;
+        }
+
+        td { color: #ccc; }
+
+        /* Architecture */
+        .tree {
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            background: #0e0e14;
+            border: 1px solid #1a1a2e;
+            border-radius: 8px;
+            padding: 24px 28px;
+            color: #aaa;
+            line-height: 1.9;
+            overflow-x: auto;
+        }
+
+        .tree .file { color: #e0e0e0; }
+        .tree .dir { color: #6c63ff; }
+        .tree .comment { color: #555; }
+
+        /* Personality */
+        .personality-box {
+            background: #111118;
+            border: 1px solid #1e1e30;
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        .personality-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .personality-box li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #aaa;
+        }
+
+        .personality-box li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: #6c63ff;
+            font-weight: bold;
+        }
+
+        .examples {
+            margin-top: 20px;
+            font-style: italic;
+            color: #777;
+        }
+
+        .examples p {
+            padding: 4px 0;
+            padding-left: 16px;
+            border-left: 2px solid #2a2a3e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #444;
+            font-size: 0.8rem;
+            border-top: 1px solid #1a1a2e;
+        }
+
+        code {
+            background: #1a1a2e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #6c63ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1><span>S</span>aphira</h1>
+    <p>Assistente de desktop com IA local para Windows. Converse por texto ou voz, controle aplicativos e veja a tela &mdash; tudo roda na sua maquina.</p>
+</div>
+
+<div class="container">
+
+    <!-- FUNCIONALIDADES -->
+    <section>
+        <div class="section-title">Funcionalidades</div>
+        <div class="grid">
+
+            <div class="card">
+                <div class="card-icon">💬</div>
+                <h3>Chat Local via LLM</h3>
+                <p>Converse com a Saphira usando texto. O LLM roda localmente via <a href="https://ollama.com" style="color:#6c63ff">Ollama</a> com o modelo <code>gemma3:4b</code> &mdash; zero custo, sem API keys, sem envio de dados para servidores terceiros.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🎙️</div>
+                <h3>Reconhecimento de Voz (STT)</h3>
+                <p>Fale naturalmente e a Saphira entende o que voce disse. Usa <a href="https://github.com/KoljaB/RealtimeSTT" style="color:#6c63ff">RealtimeSTT</a> com modelo Whisper e deteccao automatica de fim de fala (VAD). Modo pontual (<code>/voz</code>) ou contínuo (<code>/voz_continuo</code>).</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🔊</div>
+                <h3>Sintese de Voz (TTS)</h3>
+                <p>A Saphira responde falando, usando <a href="https://github.com/KoljaB/RealtimeTTS" style="color:#6c63ff">RealtimeTTS</a> com Azure Speech (voz <code>pt-BR-ThalitaNeural</code>). O TTS e opcional e configuravel via <code>.env</code>.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">👁️</div>
+                <h3>Visao de Tela</h3>
+                <p>Peca para a Saphira "olhar" sua tela. O sistema captura a tela com <code>Pillow.ImageGrab</code> e analisa com o modelo <a href="https://github.com/vikhyat/moondream" style="color:#6c63ff">Moondream</a> via Ollama, descrevendo o que esta sendo exibido.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">💻</div>
+                <h3>Controle de Aplicativos</h3>
+                <p>Abra programas pelo comando de voz ou texto: "abre o chrome", "roda o vscode", etc. O sistema busca executaveis dinamicamente no disco e suporta apelidos configuraveis (<code>navegador</code>, <code>jogos</code>, etc).</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🧠</div>
+                <h3>Memoria de Sessao</h3>
+                <p>A conversa e mantida em contexto &mdash; a Saphira lembra o que foi dito anteriormente (rolling window configuravel via <code>MAX_TURNS</code>). Comando <code>limpar</code> reseta a memoria da sessao.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- MODOS DE INTERACAO -->
+    <section>
+        <div class="section-title">Modos de Interacao</div>
+        <table>
+            <thead>
+                <tr><th>Entrada</th><th>Acao</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>oi, tudo bem?</td><td>Chat normal com a IA</td></tr>
+                <tr><td>abre o chrome</td><td>Abre o Google Chrome</td></tr>
+                <tr><td>/voz</td><td>Ativa microfone pontual (VAD detecta o fim da fala)</td></tr>
+                <tr><td>/voz_continuo</td><td>Modo voz contínuo &mdash; microfone reativa automaticamente apos cada resposta. Diga "sair" para encerrar.</td></tr>
+                <tr><td>olha minha tela</td><td>Captura a tela e analisa com Moondream</td></tr>
+                <tr><td>limpar</td><td>Limpa a memoria da sessao</td></tr>
+                <tr><td>sair / Ctrl+C</td><td>Encerra o programa</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- PERSONALIDADE -->
+    <section>
+        <div class="section-title">Personalidade</div>
+        <div class="personality-box">
+            <p style="color:#ccc; margin-bottom:16px;">A Saphira tem personalidade sarcastica, direta e com humor seco. A persona e definida no <code>Modelfile</code> e embutida no modelo customizado Ollama.</p>
+            <ul>
+                <li>Levemente sarcastica, mas sempre util</li>
+                <li>Respostas curtas e diretas &mdash; nada de enrolacao</li>
+                <li>Tom descontraido e amigavel</li>
+                <li>Nunca menciona que e uma IA, modelo ou programa</li>
+                <li>Fala em portugues do Brasil por padrao</li>
+                <li>Senso de humor seco e inteligente</li>
+            </ul>
+            <div class="examples">
+                <p>"Feito. Qualquer coisa, me chama."</p>
+                <p>"Interessante. Voce tem certeza disso?"</p>
+                <p>"Pode deixar. Eu resolvo enquanto voce toma um cafe."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARQUITETURA -->
+    <section>
+        <div class="section-title">Arquitetura</div>
+        <div class="tree">
+<span class="dir">Ai-daughter/</span>
+├── <span class="file">main.py</span>              <span class="comment">→ Ponto de entrada, loop principal interativo</span>
+├── <span class="file">Modelfile</span>            <span class="comment">→ Persona "Saphira" embutida no modelo Ollama</span>
+│
+├── <span class="dir">core/</span>
+│   ├── <span class="file">orchestrator.py</span>  <span class="comment">→ Detecta intencao e coordena os modulos</span>
+│   ├── <span class="file">brain.py</span>         <span class="comment">→ Comunicacao com Ollama (LLM)</span>
+│   └── <span class="file">memory.py</span>        <span class="comment">→ Memoria de conversa (rolling window)</span>
+│
+├── <span class="dir">voice/</span>
+│   ├── <span class="file">stt.py</span>           <span class="comment">→ Speech-to-Text via RealtimeSTT + Whisper</span>
+│   └── <span class="file">tts.py</span>           <span class="comment">→ Text-to-Speech via RealtimeTTS + Azure</span>
+│
+├── <span class="dir">actions/</span>
+│   ├── <span class="file">commands.py</span>      <span class="comment">→ Mapeamento de comandos e apelidos de apps</span>
+│   ├── <span class="file">executor.py</span>      <span class="comment">→ Executa acoes (abre apps) via subprocess</span>
+│   ├── <span class="file">finder.py</span>        <span class="comment">→ Busca dinamica de .exe no filesystem</span>
+│   └── <span class="file">vision.py</span>        <span class="comment">→ Captura de tela + analise com Moondream</span>
+│
+└── <span class="dir">config/</span>
+    ├── <span class="file">settings.py</span>      <span class="comment">→ Configuracoes centrais (env, paths, keywords)</span>
+    ├── <span class="file">responses.json</span>   <span class="comment">→ Respostas predefinidas do sistema</span>
+    └── <span class="file">responses.py</span>     <span class="comment">→ Loader de respostas com formatacao</span>
+        </div>
+    </section>
+
+    <!-- STACK -->
+    <section>
+        <div class="section-title">Stack Tecnologico</div>
+        <div class="grid">
+            <div class="card">
+                <h3>LLM Local</h3>
+                <p><code>Ollama</code> com <code>gemma3:4b</code> — processamento 100% local, sem API keys.</p>
+            </div>
+            <div class="card">
+                <h3>Visao</h3>
+                <p><code>Moondream</code> — modelo de visao leve para analise de imagens via Ollama.</p>
+            </div>
+            <div class="card">
+                <h3>Voz (STT)</h3>
+                <p><code>RealtimeSTT</code> com modelo <code>Whisper small</code> e deteção automatica de voz (VAD).</p>
+            </div>
+            <div class="card">
+                <h3>Voz (TTS)</h3>
+                <p><code>RealtimeTTS</code> com <code>Azure Speech</code> (voz Neural brasileira).</p>
+            </div>
+            <div class="card">
+                <h3>Python</h3>
+                <p><code>3.12+</code> — type hints, dataclasses, dotenv para configuracao.</p>
+            </div>
+            <div class="card">
+                <h3>Plataforma</h3>
+                <p><code>Windows 10/11</code> — captura de tela GDI, busca de executaveis, subprocess.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    AI:Daughter — Saphira &middot; IA local, sem API keys, zero custo
+</footer>
+
+</body>
+</html>
